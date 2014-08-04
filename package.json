@@ -20,5 +20,10 @@
   "bugs": {
     "url": "https://github.com/fgandellini/ftjs/issues"
   },
-  "homepage": "https://github.com/fgandellini/ftjs"
+  "homepage": "https://github.com/fgandellini/ftjs",
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "gulp": "^3.8.7",
+    "gulp-mocha": "^0.5.2"
+  }
 }
