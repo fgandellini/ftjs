@@ -25,5 +25,8 @@
     "chai": "^1.9.1",
     "gulp": "^3.8.7",
     "gulp-mocha": "^0.5.2"
+  },
+  "dependencies": {
+    "lodash": "^2.4.1"
   }
 }
