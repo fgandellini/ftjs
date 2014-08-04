@@ -6,16 +6,14 @@ var libs = 'lib/**/*.js';
 var tests = 'test/**/*.js';
 
 gulp.task('test', function(done) {
-  gulp.src([files, libs, tests])
+  return gulp.src([files, libs, tests])
     .pipe(mocha({
       reporter: 'spec'
     }));
-  done();
 });
 
 gulp.task('watch', function(done) {
-  gulp.watch([files, libs, tests], ['test']);
-  done();
+  return gulp.watch([files, libs, tests], ['test']);
 });
 
 gulp.task('default', ['watch']);
