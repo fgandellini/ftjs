@@ -3,6 +3,10 @@
 var expect = require('chai').expect;
 var ftjs = require('../lib/ftjs');
 
+var parser = function(map) {
+  return ''
+};
+
 describe('ftjs', function() {
 
   it('should exist', function() {
@@ -29,7 +33,7 @@ describe('ftjs', function() {
 
     it('should skip empty object', function(done) {
       var map = {};
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({});
         done();
       });
@@ -41,7 +45,7 @@ describe('ftjs', function() {
         num: 2,
         fn: function() {}
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data.str).to.equal('string');
         expect(data.num).to.equal(2);
         expect(data.fn).to.be.a('function');
@@ -51,7 +55,7 @@ describe('ftjs', function() {
 
     it('should skip empty array', function(done) {
       var map = [];
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal([]);
         done();
       });
@@ -59,7 +63,7 @@ describe('ftjs', function() {
 
     it('should skip generic array', function(done) {
       var map = [1, 2, 3];
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data[0]).to.equal(1);
         expect(data[1]).to.equal(2);
         expect(data[2]).to.equal(3);
@@ -69,7 +73,7 @@ describe('ftjs', function() {
 
     it('should skip number', function(done) {
       var map = 1;
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.equal(map);
         done();
       });
@@ -77,7 +81,7 @@ describe('ftjs', function() {
 
     it('should skip string', function(done) {
       var map = 'map';
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.equal(map);
         done();
       });
@@ -87,7 +91,7 @@ describe('ftjs', function() {
       var map = {
         nested: {}
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({
           nested: {}
         });
@@ -103,7 +107,7 @@ describe('ftjs', function() {
           fn: function() {}
         }
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data.nested.str).to.equal('string');
         expect(data.nested.num).to.equal(2);
         expect(data.nested.fn).to.be.a('function')
@@ -115,7 +119,7 @@ describe('ftjs', function() {
       var map = {
         nested: []
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({
           nested: []
         });
@@ -127,7 +131,7 @@ describe('ftjs', function() {
       var map = {
         nested: [1, 2, 3]
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({
           nested: [1, 2, 3]
         });
@@ -139,7 +143,7 @@ describe('ftjs', function() {
       var map = {
         nested: 1
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({
           nested: 1
         });
@@ -151,7 +155,7 @@ describe('ftjs', function() {
       var map = {
         nested: 'map'
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({
           nested: 'map'
         });
@@ -166,7 +170,7 @@ describe('ftjs', function() {
         h: 0,
         w: 0
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.equal('');
         done();
       });
@@ -179,7 +183,7 @@ describe('ftjs', function() {
         w: 0,
         y: 0
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.equal('');
         done();
       });
@@ -193,7 +197,7 @@ describe('ftjs', function() {
         w: 0,
         k: 0
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({
           x: 0,
           y: 0,
@@ -207,7 +211,7 @@ describe('ftjs', function() {
 
     it('should skip array map', function(done) {
       var map = ['x', 'y', 'h', 'w'];
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal(['x', 'y', 'h', 'w']);
         done();
       });
@@ -222,7 +226,7 @@ describe('ftjs', function() {
           w: 0
         }
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({
           nested: ''
         });
@@ -239,7 +243,7 @@ describe('ftjs', function() {
           y: 0
         }
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({
           nested: ''
         });
@@ -257,7 +261,7 @@ describe('ftjs', function() {
           k: 0
         }
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.deep.equal({
           nested: {
             x: 0,
@@ -275,7 +279,7 @@ describe('ftjs', function() {
       var map = {
         nested: ['x', 'y', 'h', 'w']
       };
-      ftjs().extractMaps(map, function(data) {;
+      ftjs().extractMaps(map, parser, function(data) {;
         expect(data).to.deep.equal({
           nested: ['x', 'y', 'h', 'w']
         });
@@ -319,7 +323,7 @@ describe('ftjs', function() {
         },
         fun: function() {}
       };
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data.b).to.equal(1);
         expect(data.c).to.equal('hello');
         expect(data.d.e).to.equal(3);
@@ -345,7 +349,7 @@ describe('ftjs', function() {
 
     it('should not modify map object', function(done) {
       var map = {};
-      ftjs().extractMaps(map, function(data) {
+      ftjs().extractMaps(map, parser, function(data) {
         expect(data).to.not.equal(map);
         done();
       });
