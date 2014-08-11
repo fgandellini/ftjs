@@ -3,9 +3,8 @@
 var expect = require('chai').expect;
 var ftjs = require('../lib/ftjs');
 
-var parser = function(map) {
-  return ''
-};
+var pdf = 'test/test.pdf';
+var notFoundPdf = 'test/notfound.pdf';
 
 describe('ftjs', function() {
 
@@ -13,27 +12,19 @@ describe('ftjs', function() {
     expect(ftjs).to.exist;
   });
 
-  it('should be a nodejs module', function() {
+  it('should be a module', function() {
     expect(ftjs).to.be.a('function');
   });
 
-  xit('should take pdf form as parameter', function() {
-
-  });
-
-  xit('should take a map object', function() {
-
-  });
-
-  describe('extractMaps', function() {
+  describe('parse', function() {
 
     it('should be a function', function() {
-      expect(ftjs().extractMaps).to.be.a('function');
+      expect(ftjs().parse).to.be.a('function');
     });
 
     it('should skip empty object', function(done) {
       var map = {};
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal({});
         done();
       });
@@ -45,7 +36,7 @@ describe('ftjs', function() {
         num: 2,
         fn: function() {}
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data.str).to.equal('string');
         expect(data.num).to.equal(2);
         expect(data.fn).to.be.a('function');
@@ -55,7 +46,7 @@ describe('ftjs', function() {
 
     it('should skip empty array', function(done) {
       var map = [];
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal([]);
         done();
       });
@@ -63,7 +54,7 @@ describe('ftjs', function() {
 
     it('should skip generic array', function(done) {
       var map = [1, 2, 3];
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data[0]).to.equal(1);
         expect(data[1]).to.equal(2);
         expect(data[2]).to.equal(3);
@@ -73,7 +64,7 @@ describe('ftjs', function() {
 
     it('should skip number', function(done) {
       var map = 1;
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.equal(map);
         done();
       });
@@ -81,7 +72,7 @@ describe('ftjs', function() {
 
     it('should skip string', function(done) {
       var map = 'map';
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.equal(map);
         done();
       });
@@ -91,7 +82,7 @@ describe('ftjs', function() {
       var map = {
         nested: {}
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal({
           nested: {}
         });
@@ -107,7 +98,7 @@ describe('ftjs', function() {
           fn: function() {}
         }
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data.nested.str).to.equal('string');
         expect(data.nested.num).to.equal(2);
         expect(data.nested.fn).to.be.a('function')
@@ -119,7 +110,7 @@ describe('ftjs', function() {
       var map = {
         nested: []
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal({
           nested: []
         });
@@ -131,7 +122,7 @@ describe('ftjs', function() {
       var map = {
         nested: [1, 2, 3]
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal({
           nested: [1, 2, 3]
         });
@@ -143,7 +134,7 @@ describe('ftjs', function() {
       var map = {
         nested: 1
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal({
           nested: 1
         });
@@ -155,7 +146,7 @@ describe('ftjs', function() {
       var map = {
         nested: 'map'
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal({
           nested: 'map'
         });
@@ -170,7 +161,7 @@ describe('ftjs', function() {
         h: 0,
         w: 0
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs(pdf).parse(map, function(err, data) {
         expect(data).to.equal('');
         done();
       });
@@ -183,7 +174,7 @@ describe('ftjs', function() {
         w: 0,
         y: 0
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs(pdf).parse(map, function(err, data) {
         expect(data).to.equal('');
         done();
       });
@@ -197,7 +188,7 @@ describe('ftjs', function() {
         w: 0,
         k: 0
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal({
           x: 0,
           y: 0,
@@ -211,7 +202,7 @@ describe('ftjs', function() {
 
     it('should skip array map', function(done) {
       var map = ['x', 'y', 'h', 'w'];
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal(['x', 'y', 'h', 'w']);
         done();
       });
@@ -226,7 +217,7 @@ describe('ftjs', function() {
           w: 0
         }
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs(pdf).parse(map, function(err, data) {
         expect(data).to.deep.equal({
           nested: ''
         });
@@ -243,7 +234,7 @@ describe('ftjs', function() {
           y: 0
         }
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs(pdf).parse(map, function(err, data) {
         expect(data).to.deep.equal({
           nested: ''
         });
@@ -261,7 +252,7 @@ describe('ftjs', function() {
           k: 0
         }
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.deep.equal({
           nested: {
             x: 0,
@@ -279,7 +270,7 @@ describe('ftjs', function() {
       var map = {
         nested: ['x', 'y', 'h', 'w']
       };
-      ftjs().extractMaps(map, parser, function(data) {;
+      ftjs().parse(map, function(err, data) {;
         expect(data).to.deep.equal({
           nested: ['x', 'y', 'h', 'w']
         });
@@ -323,7 +314,7 @@ describe('ftjs', function() {
         },
         fun: function() {}
       };
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs(pdf).parse(map, function(err, data) {
         expect(data.b).to.equal(1);
         expect(data.c).to.equal('hello');
         expect(data.d.e).to.equal(3);
@@ -349,9 +340,187 @@ describe('ftjs', function() {
 
     it('should not modify map object', function(done) {
       var map = {};
-      ftjs().extractMaps(map, parser, function(data) {
+      ftjs().parse(map, function(err, data) {
         expect(data).to.not.equal(map);
         done();
+      });
+    });
+
+    it('should give an error if pdf file not exist and good map is passed', function(done) {
+      var map = {
+        x: 10,
+        y: 10,
+        h: 10,
+        w: 10
+      };
+      ftjs(notFoundPdf).parse(map, function(err, data) {
+        expect(err).to.exist;
+        expect(data).to.not.exist;
+        done();
+      });
+    });
+
+    it('should extract data from valid pdf with no map nesting', function(done) {
+      var map = {
+        x: 470,
+        y: 450,
+        h: 63,
+        w: 960
+      };
+      ftjs(pdf).parse(map, function(err, data) {
+        if (err) {
+          done(err);
+        } else {
+          expect(map).to.deep.equal({
+            x: 470,
+            y: 450,
+            h: 63,
+            w: 960
+          });
+          expect(data).to.equal('X X X J O H N H O L M E S X X X');
+          done();
+        }
+      });
+    });
+
+    it('should extract data from valid pdf with 1 level nesting', function(done) {
+      var map = {
+        codiceFiscale: {
+          x: 470,
+          y: 450,
+          h: 63,
+          w: 960
+        },
+        cognome: {
+          x: 470,
+          y: 550,
+          h: 63,
+          w: 1200
+        }
+      };
+      ftjs(pdf).parse(map, function(err, data) {
+        if (err) {
+          done(err);
+        } else {
+          expect(map).to.deep.equal({
+            codiceFiscale: {
+              x: 470,
+              y: 450,
+              h: 63,
+              w: 960
+            },
+            cognome: {
+              x: 470,
+              y: 550,
+              h: 63,
+              w: 1200
+            }
+          });
+          expect(data).to.deep.equal({
+            codiceFiscale: 'X X X J O H N H O L M E S X X X',
+            cognome: 'CURTIS ESTES'
+          });
+          done();
+        }
+      });
+    });
+
+    it('should extract data from valid pdf with 2 leves nesting', function(done) {
+      var map = {
+        codiceFiscale: {
+          x: 470,
+          y: 450,
+          h: 63,
+          w: 960
+        },
+        datiAnagrafici: {
+          cognome: {
+            x: 470,
+            y: 550,
+            h: 63,
+            w: 1200
+          },
+          nome: {
+            x: 1680,
+            y: 550,
+            h: 63,
+            w: 680
+          },
+          sesso: 'M'
+        }
+      };
+      ftjs(pdf).parse(map, function(err, data) {
+        if (err) {
+          done(err);
+        } else {
+          expect(map.codiceFiscale).to.deep.equal({
+            x: 470,
+            y: 450,
+            h: 63,
+            w: 960
+          });
+          expect(map.datiAnagrafici.cognome).to.deep.equal({
+            x: 470,
+            y: 550,
+            h: 63,
+            w: 1200
+          });
+          expect(map.datiAnagrafici.nome).to.deep.equal({
+            x: 1680,
+            y: 550,
+            h: 63,
+            w: 680
+          });
+          expect(map.datiAnagrafici.sesso).to.equal('M');
+          expect(data.codiceFiscale).to.equal('X X X J O H N H O L M E S X X X');
+          expect(data.datiAnagrafici.cognome).to.equal('CURTIS ESTES');
+          expect(data.datiAnagrafici.nome).to.equal('JOHN');
+          expect(data.datiAnagrafici.sesso).to.equal('M');
+          done();
+        }
+      });
+    });
+
+    it('should extract data from valid pdf with complex map', function(done) {
+      var map = {
+        contribuente: {
+          codiceFiscale: {
+            x: 470,
+            y: 450,
+            h: 63,
+            w: 960
+          },
+          datiAnagrafici: {
+            cognome: [{
+              x: 470,
+              y: 550,
+              h: 63,
+              w: 1200
+            }, 'a', 12],
+            empty: {
+              x: 0,
+              y: 0,
+              h: 0,
+              w: 0
+            }
+          }
+        }
+      };
+      ftjs(pdf).parse(map, function(err, data) {
+        if (err) {
+          done(err);
+        } else {
+          expect(data).to.deep.equal({
+            contribuente: {
+              codiceFiscale: 'X X X J O H N H O L M E S X X X',
+              datiAnagrafici: {
+                cognome: ['CURTIS ESTES', 'a', 12],
+                empty: ''
+              }
+            }
+          });
+          done();
+        }
       });
     });
 

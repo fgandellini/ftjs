@@ -27,6 +27,7 @@
     "gulp-mocha": "^0.5.2"
   },
   "dependencies": {
-    "lodash": "^2.4.1"
+    "lodash": "^2.4.1",
+    "q": "^1.0.1"
   }
 }
