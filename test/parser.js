@@ -111,24 +111,22 @@ describe('parser', function() {
       );
     });
 
-    xit('should skip map parsing if pdf does not exist and map is null', function(done) {
+    it('should return same map if pdf does not exist and map is null', function(done) {
       parser('notfound.pdf').get(null, 'root').then(
         function(data) {
-          expect(data).to.exist
-            .and.have.property('node', 'root')
-            .and.have.property('value', null);
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.equal(null);
           done();
         },
         function(err) {
-          expect(err).to.exist
-            .and.be.instanceof(Error)
-            .and.have.property('message', 'malformed or empty map object');
+          expect(err).to.not.exist
           done();
         }
       );
     });
 
-    xit('should give an error if pdf does not exist and map is empty', function(done) {
+    it('should give an empty string if pdf does not exist and map is empty', function(done) {
       parser('notfound.pdf').get({
         x: 0,
         y: 0,
@@ -136,19 +134,19 @@ describe('parser', function() {
         w: 0
       }, 'root').then(
         function(data) {
-          expect(data).to.not.exist;
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.equal('');
           done();
         },
         function(err) {
-          expect(err).to.exist
-            .and.be.instanceof(Error)
-            .and.have.property('message', 'malformed or empty map object');
+          expect(err).to.not.exist;
           done();
         }
       );
     });
 
-    xit('should give an error if pdf does not exist and map is good', function(done) {
+    it('should give an error if pdf does not exist and map is good', function(done) {
       parser('notfound.pdf').get({
         x: 10,
         y: 10,
@@ -168,7 +166,7 @@ describe('parser', function() {
       );
     });
 
-    xit('should give an error if pdf does not exist and map is malformed (number of params)', function(done) {
+    it('should return same map if pdf does not exist and map is malformed (number of params)', function(done) {
       parser('notfound.pdf').get({
         x: 10,
         y: 10,
@@ -177,19 +175,25 @@ describe('parser', function() {
         k: 10
       }, 'root').then(
         function(data) {
-          expect(data).to.not.exist;
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.deep.equal({
+            x: 10,
+            y: 10,
+            h: 10,
+            w: 10,
+            k: 10
+          });
           done();
         },
         function(err) {
-          expect(err).to.exist
-            .and.be.instanceof(Error)
-            .and.have.property('message', 'malformed or empty map object');
+          expect(err).to.not.exist;
           done();
         }
       );
     });
 
-    xit('should give an error if pdf does not exist and map is malformed (type of params)', function(done) {
+    it('should return same map if pdf does not exist and map is malformed (type of params)', function(done) {
       parser('notfound.pdf').get({
         x: 'a',
         y: 10,
@@ -197,105 +201,149 @@ describe('parser', function() {
         w: 10
       }, 'root').then(
         function(data) {
-          expect(data).to.not.exist;
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.deep.equal({
+            x: 'a',
+            y: 10,
+            h: 10,
+            w: 10
+          });
           done();
         },
         function(err) {
-          expect(err).to.exist
-            .and.be.instanceof(Error)
-            .and.have.property('message', 'malformed or empty map object');
+          expect(err).to.not.exist;
           done();
         }
       );
     });
 
-    xit('should give an error if pdf file exist and map is null', function(done) {
+    it('should return the same map if pdf file exist and map is null', function(done) {
       parser('test/test.pdf').get(null, 'root').then(
         function(data) {
-          expect(data).to.not.exist;
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.equal(null);
           done();
         },
         function(err) {
-          expect(err).to.exist
-            .and.be.instanceof(Error)
-            .and.have.property('message', 'malformed or empty map object');
+          expect(err).to.not.exist
           done();
         }
       );
     });
 
-    xit('should give an error if pdf file exist and map is empty', function(done) {
+    it('should give an empty string if pdf file exist and map is empty', function(done) {
       parser('test/test.pdf').get({
         x: 0,
         y: 0,
         h: 0,
         w: 0
-      }, function(err, data) {
-        expect(data).to.not.exist;
-        expect(err).to.exist
-          .and.be.instanceof(Error)
-          .and.have.property('message', 'malformed or empty map object');
-        done();
-      });
+      }, 'root').then(
+        function(data) {
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.equal('');
+          done();
+        },
+        function(err) {
+          expect(err).to.not.exist;
+          done();
+        }
+      );
     });
 
-    xit('should give an error if pdf file exist and map is malformed (number of params)', function(done) {
+    it('should give an error if pdf file exist and map is malformed (number of params)', function(done) {
       parser('test/test.pdf').get({
         x: 10,
         y: 10,
         h: 10,
         w: 10,
         k: 10
-      }, function(err, data) {
-        expect(data).to.not.exist;
-        expect(err).to.exist
-          .and.be.instanceof(Error)
-          .and.have.property('message', 'malformed or empty map object');
-        done();
-      });
+      }, 'root').then(
+        function(data) {
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.deep.equal({
+            x: 10,
+            y: 10,
+            h: 10,
+            w: 10,
+            k: 10
+          });
+          done();
+        },
+        function(err) {
+          expect(err).to.not.exist;
+          done();
+        }
+      );
     });
 
-    xit('should give an error if pdf file exist and map is malformed (type of params)', function(done) {
+    it('should give an error if pdf file exist and map is malformed (type of params)', function(done) {
       parser('test/test.pdf').get({
         x: 'a',
         y: 10,
         h: 10,
         w: 10
-      }, function(err, data) {
-        expect(data).to.not.exist;
-        expect(err).to.exist
-          .and.be.instanceof(Error)
-          .and.have.property('message', 'malformed or empty map object');
-        done();
-      });
+      }, 'root').then(
+        function(data) {
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.deep.equal({
+            x: 'a',
+            y: 10,
+            h: 10,
+            w: 10
+          });
+          done();
+        },
+        function(err) {
+          expect(err).to.not.exist;
+          done();
+        }
+      );
     });
 
-    xit('should give "TEST 01" if called with test.pdf and map {x:1400, y:160, h:100, w:990}', function(done) {
+    it('should give "TEST 01" if called with test.pdf and map {x:1400, y:160, h:100, w:990}', function(done) {
       parser('test/test.pdf').get({
         x: 1400,
         y: 160,
         h: 100,
         w: 990
-      }, function(err, data) {
-        expect(err).to.not.exist;
-        expect(data).to.exist.and.to.equal('TEST 01');
-        done();
-      });
+      }, 'root').then(
+        function(data) {
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.equal('TEST 01');
+          done();
+        },
+        function(err) {
+          expect(err).to.not.exist;
+          done();
+        }
+      );
     });
 
-    xit('should give multiple lines as sinble line if called with test.pdf and map {x:75, y:200, h:120, w:610}', function(done) {
+    it('should give multiple lines as single line if called with test.pdf and map {x:75, y:200, h:120, w:610}', function(done) {
       parser('test/test.pdf').get({
         x: 75,
         y: 200,
         h: 120,
         w: 610
-      }, function(err, data) {
-        expect(err).to.not.exist;
-        expect(data).to.exist.and.to.equal('MODELLO DI PAGAMENTO UNIFICATO');
-        done();
-      });
+      }, 'root').then(
+        function(data) {
+          expect(data).to.exist;
+          expect(data.node).to.equal('root');
+          expect(data.value).to.equal('MODELLO DI PAGAMENTO UNIFICATO');
+          done();
+        },
+        function(err) {
+          expect(err).to.not.exist;
+          done();
+        }
+      );
     });
-
 
   });
 
